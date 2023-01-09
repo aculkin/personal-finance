@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Salary part 1",
+    "Frequency": "biMonthly",
+    "interestRate": null,
+    "weekday": null,
+    "monthDay": 1,
+    "amount": 2000,
+    "payoff": false,
+    "priority": 1,
+    "fromAccount": null,
+    "toAccount": 1
+  },
+  {
+    "name": "Salary part 2",
+    "Frequency": "biMonthly",
+    "interestRate": null,
+    "weekday": null,
+    "monthDay": 1,
+    "amount": 2000,
+    "payoff": false,
+    "priority": 2,
+    "fromAccount": null,
+    "toAccount": 2
+  },
+  {
+    "name": "Daily Credit Card spending",
+    "Frequency": "daily",
+    "interestRate": null,
+    "weekday": null,
+    "monthDay": 1,
+    "amount": 30,
+    "payoffToAccount": true,
+    "priority": 3,
+    "fromAccount": 1,
+    "toAccount": 3
+  },
+  {
+    "name": "Daily Credit Card spending",
+    "Frequency": "daily",
+    "interestRate": null,
+    "weekday": null,
+    "monthDay": 1,
+    "amount": 30,
+    "payoffToAccount": true,
+    "priority": 3,
+    "fromAccount": 1,
+    "toAccount": 3
+  }
+]

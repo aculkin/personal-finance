@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "checking",
+    "asset": true,
+    "userId": 1,
+    "liquid": true,
+    "targetValue": 500
+  },
+  {
+    "id": 2,
+    "name": "savings",
+    "asset": true,
+    "userId": 1,
+    "liquid": true,
+    "targetValue": 0
+  },
+  {
+    "id": 3,
+    "name": "credit card",
+    "asset": false,
+    "userId": 1,
+    "liquid": true,
+    "targetValue": 0
+  }
+]
