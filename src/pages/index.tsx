@@ -10,13 +10,13 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/initSupabase'
 
 export default function Home() {
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState(null)
   const { toggleColorMode } = useColorMode()
 
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
-      setUser({})
+      setUser(null)
       console.log(error)
     } catch (error) {
       console.error(error)
@@ -47,7 +47,7 @@ export default function Home() {
         <Button onClick={signOut}>Log Out</Button>
       </ButtonGroup>
       <Text>
-        Current User: {user?.email ? user.email : 'no one logged in currently'}
+        Current User: {user ? user.email : 'no one logged in currently'}
       </Text>
     </>
   )
