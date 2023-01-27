@@ -1,41 +1,41 @@
 [
   {
-    "date": "1",
+    "date": 3,
     "amount": 500,
     "accountId": 1
   },
   {
-    "date": "2",
+    "date": 2,
     "amount": 550,
     "accountId": 1
   },
   {
-    "date": "3",
+    "date": 0,
     "amount": 600,
     "accountId": 1
   },
   {
-    "date": "1",
+    "date": 2,
     "amount": 500,
     "accountId": 2
   },
   {
-    "date": "2",
+    "date": 1,
     "amount": 550,
     "accountId": 2
   },
   {
-    "date": "3",
+    "date": 0,
     "amount": 600,
     "accountId": 2
   },
   {
-    "date": "1",
+    "date": 4,
     "amount": 100,
     "accountId": 3
   },
   {
-    "date": "2",
+    "date": 0,
     "amount": 50,
     "accountId": 3
   }
