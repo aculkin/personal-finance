@@ -5,13 +5,29 @@ import {
   Link,
   useColorMode,
   Text,
+  Flex,
 } from '@chakra-ui/react'
+
+import { SingleDatepicker } from 'chakra-dayzed-datepicker'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/initSupabase'
+import { AccountsChart } from '../components'
+import { putDatesInOrder } from '../helpers'
 
 export default function Home() {
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(new Date())
   const [user, setUser] = useState(null)
   const { toggleColorMode } = useColorMode()
+
+  const handlePickDate = (isStartDate: boolean) => (newDate: Date) => {
+    const { firstDate, secondDate } = putDatesInOrder(
+      isStartDate ? endDate : startDate,
+      newDate
+    )
+    setStartDate(firstDate)
+    setEndDate(secondDate)
+  }
 
   const signOut = async () => {
     try {
@@ -34,8 +50,6 @@ export default function Home() {
     getUser()
   }, [])
 
-  console.log('user!', user)
-
   return (
     <>
       <Heading>Welcome to my finance app</Heading>
@@ -49,6 +63,19 @@ export default function Home() {
       <Text>
         Current User: {user ? user.email : 'no one logged in currently'}
       </Text>
+      <Flex direction="row">
+        <SingleDatepicker
+          name="start date picker"
+          date={startDate}
+          onDateChange={handlePickDate(true)}
+        />
+        <SingleDatepicker
+          name="end date picker"
+          date={endDate}
+          onDateChange={handlePickDate(false)}
+        />
+      </Flex>
+      <AccountsChart startDate={startDate} endDate={endDate} />
     </>
   )
 }
