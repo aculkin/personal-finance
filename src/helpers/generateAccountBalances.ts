@@ -1,36 +1,7 @@
 import { isSameDay } from 'date-fns'
 import { shouldTransactionOccur } from './shouldTransactionOccur'
 
-interface Account {
-  id: number
-  name: string
-  asset: boolean
-  userId: number
-  liquid: boolean
-  targetValue: number
-}
-
-interface Transaction {
-  id: number
-  name: string
-  frequency: string
-  interestRate?: number
-  weekday?: number
-  monthDay?: number
-  amount?: number
-  payoff?: boolean
-  priority: number
-  fromAccount: number
-  toAccount: number
-  startDate: Date
-}
-
-interface Balance {
-  id: number
-  date: Date
-  amount: number
-  accountId: number
-}
+import { Accounts, Transactions, Balances } from '../../types'
 
 const generateAccountBalances = ({
   dates,
@@ -39,9 +10,9 @@ const generateAccountBalances = ({
   transactions,
 }: {
   dates: Date[]
-  accounts: Account[]
-  balances: Balance[]
-  transactions: Transaction[]
+  accounts: Accounts[]
+  balances: Balances[]
+  transactions: Transactions[]
 }) => {
   const resultAccounts = {}
   accounts.forEach((account) => {
@@ -55,18 +26,21 @@ const generateAccountBalances = ({
         const transactionShouldOccur = shouldTransactionOccur({
           frequency: transaction.frequency,
           currentDate: date,
-          startDate: transaction.startDate,
+          startDate: new Date(transaction.start_date),
         })
         if (transactionShouldOccur) {
-          if (transaction.fromAccount === account.id) {
+          if (transaction.from_account === account.id) {
             resultingBalance = resultingBalance - transaction.amount
-          } else if (transaction.toAccount === account.id) {
+          } else if (transaction.to_account === account.id) {
             resultingBalance = resultingBalance + transaction.amount
           }
         }
       })
       balances.forEach((balance, balanceIndex) => {
-        if (isSameDay(balance.date, date) && account.id === balance.accountId) {
+        if (
+          isSameDay(new Date(balance.date), date) &&
+          account.id === balance.account_id
+        ) {
           resultingBalance = balance.amount
         }
       })

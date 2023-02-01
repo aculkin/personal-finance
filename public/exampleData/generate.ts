@@ -1,5 +1,6 @@
 import { subDays } from 'date-fns'
 import { transactions, balances, accounts } from '.'
+
 const today = new Date()
 
 const generateBalances = () =>
