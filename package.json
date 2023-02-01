@@ -4,7 +4,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "update-types": "npx supabase gen types typescript --project-id \"$PROJECT_ID\" > types/supabase.ts"
+    "update-types": "npx supabase gen types typescript --project-id \"tmdsdtwdkkrjgghljwli\" > types/supabase.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.9",
