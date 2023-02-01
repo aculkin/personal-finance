@@ -5,6 +5,8 @@ import { SessionContextProvider, Session } from '@supabase/auth-helpers-react'
 import { AppProps } from 'next/app'
 import { ChakraProvider } from '@chakra-ui/react'
 
+import { AppContextProvider } from '../providers'
+
 const App = ({
   Component,
   pageProps,
@@ -15,13 +17,15 @@ const App = ({
       supabaseClient={supabase}
       initialSession={pageProps.initialSession}
     >
-      <ChakraProvider>
-        <Head>
-          <title>Personal Finance App</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <Component {...pageProps} />
-      </ChakraProvider>
+      <AppContextProvider>
+        <ChakraProvider>
+          <Head>
+            <title>Personal Finance App</title>
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+          <Component {...pageProps} />
+        </ChakraProvider>
+      </AppContextProvider>
     </SessionContextProvider>
   )
 }
