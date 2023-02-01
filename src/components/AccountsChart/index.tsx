@@ -10,11 +10,7 @@ import {
 } from '@chakra-ui/react'
 import { format, eachDayOfInterval } from 'date-fns'
 import { generateAccountBalances } from '../../helpers'
-import { accounts, generateBalances } from '../../../public/exampleData'
-import { generateTransactions } from '../../../public/exampleData/generate'
-
-const balances = generateBalances()
-const transactions = generateTransactions()
+import { useAppState } from '../../hooks'
 
 const AccountsChart = ({
   startDate,
@@ -23,6 +19,7 @@ const AccountsChart = ({
   startDate: Date
   endDate: Date
 }) => {
+  const { accounts, balances, transactions } = useAppState()
   const [dateArray, setDateArray] = useState([])
   const [accountArrays, setAccountArrays] = useState({})
 

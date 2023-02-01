@@ -26,9 +26,11 @@ const initialContext = {
 const appContext = createContext<Context>(initialContext)
 
 const AppContextProvider = ({ children }: { children: ReactNode }) => {
-  const [accounts, setAccounts] = useState(generateAccounts())
-  const [balances, setBalances] = useState(generateBalances())
-  const [transactions, setTransactions] = useState(generateTransactions())
+  const [accounts, setAccounts] = useState(generateAccounts() as Accounts[])
+  const [balances, setBalances] = useState(generateBalances() as Balances[])
+  const [transactions, setTransactions] = useState(
+    generateTransactions() as Transactions[]
+  )
   return (
     <appContext.Provider
       value={{
