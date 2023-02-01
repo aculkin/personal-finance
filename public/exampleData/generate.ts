@@ -1,18 +1,26 @@
 import { subDays } from 'date-fns'
-import { transactions, balances } from '.'
+import { transactions, balances, accounts } from '.'
 const today = new Date()
 
 const generateBalances = () =>
   balances.map((balance, index) => ({
     ...balance,
     id: index,
-    date: subDays(today, balance.date),
+    created_at: new Date().toString(),
+    date: subDays(today, balance.date).toString(),
   }))
 
 const generateTransactions = () =>
   transactions.map((transaction) => ({
     ...transaction,
-    startDate: subDays(today, transaction.startDate),
+    created_at: new Date().toString(),
+    start_date: subDays(today, transaction.start_date).toString(),
   }))
 
-export { generateBalances, generateTransactions }
+const generateAccounts = () =>
+  accounts.map((account) => ({
+    ...account,
+    created_at: new Date().toString(),
+  }))
+
+export { generateBalances, generateTransactions, generateAccounts }

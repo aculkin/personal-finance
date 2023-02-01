@@ -3,24 +3,24 @@
     "id": 1,
     "name": "checking",
     "asset": true,
-    "userId": 1,
     "liquid": true,
-    "targetValue": 500
+    "target_value": 500,
+    "user_id": "1"
   },
   {
     "id": 2,
     "name": "savings",
     "asset": true,
-    "userId": 1,
     "liquid": true,
-    "targetValue": 0
+    "target_value": 0,
+    "user_id": "1"
   },
   {
     "id": 3,
     "name": "credit card",
     "asset": false,
-    "userId": 1,
     "liquid": true,
-    "targetValue": 0
+    "target_value": 0,
+    "user_id": "1"
   }
 ]
