@@ -11,9 +11,11 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import { supabase } from '../../lib/initSupabase'
+
+import { useAuth } from '../hooks'
 
 const Login = () => {
+  const { login, user } = useAuth()
   const formBackground = useColorModeValue('gray.100', 'gray.700')
   const toast = useToast()
   const router = useRouter()
@@ -23,16 +25,20 @@ const Login = () => {
   })
   const { email, password } = formData
 
+  if (user) {
+    router.push('/')
+  }
+
   const validate = () => !!email && !!password
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [event.target.name]: event.target.value })
   }
 
-  const login = async () => {
+  const handleLogin = async () => {
     if (validate()) {
       try {
-        const { data, error } = await supabase.auth.signInWithPassword(formData)
+        await login(formData)
         router.push('/')
       } catch (error) {
         console.error(error)
@@ -53,7 +59,7 @@ const Login = () => {
     <Flex height="100vh" alignItems="center" justifyContent="center">
       <Flex direction="column" background={formBackground} p={12} rounded={10}>
         <Heading mb={6}>Log In</Heading>
-        <FormControl onSubmit={login}>
+        <FormControl onSubmit={handleLogin}>
           <Input
             placeholder="Email"
             mb={3}
@@ -70,7 +76,7 @@ const Login = () => {
             value={password}
             onChange={handleChange}
           />
-          <Button type="submit" colorScheme="teal" onClick={login} mb={3}>
+          <Button type="submit" colorScheme="teal" onClick={handleLogin} mb={3}>
             Log In
           </Button>
         </FormControl>
