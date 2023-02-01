@@ -1,9 +1,9 @@
 import { useContext } from 'react'
 import { appContext } from '../providers/AppProvider'
 
-const useAccounts = () => {
+const useAppState = () => {
   const context = useContext(appContext)
-  return [context.accounts, context.setAccounts]
+  return context
 }
 
-export { useAccounts }
+export { useAppState }
