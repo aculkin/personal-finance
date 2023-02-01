@@ -7,7 +7,6 @@ import {
   Switch,
   FormLabel,
 } from '@chakra-ui/react'
-import { useAccounts } from '../../hooks'
 
 interface TransactionForm {
   name?: string
