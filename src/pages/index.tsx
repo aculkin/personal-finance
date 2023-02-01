@@ -6,18 +6,24 @@ import {
   useColorMode,
   Text,
   Flex,
+  Box,
 } from '@chakra-ui/react'
-
 import { SingleDatepicker } from 'chakra-dayzed-datepicker'
-import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/initSupabase'
-import { AccountsChart } from '../components'
+import { useState } from 'react'
+
+import {
+  AccountsChart,
+  NewBalanceButton,
+  NewTransactionButton,
+  NewAccountButton,
+} from '../components'
 import { putDatesInOrder } from '../helpers'
+import { useAuth } from '../hooks'
 
 export default function Home() {
+  const { user, signOut } = useAuth()
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
-  const [user, setUser] = useState(null)
   const { toggleColorMode } = useColorMode()
 
   const handlePickDate = (isStartDate: boolean) => (newDate: Date) => {
@@ -29,27 +35,6 @@ export default function Home() {
     setEndDate(secondDate)
   }
 
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut()
-      setUser(null)
-      console.log(error)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const getUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    setUser(user)
-  }
-
-  useEffect(() => {
-    getUser()
-  }, [])
-
   return (
     <>
       <Heading>Welcome to my finance app</Heading>
@@ -59,23 +44,36 @@ export default function Home() {
           Log In!
         </Button>
         <Button onClick={signOut}>Log Out</Button>
+        <NewAccountButton />
+        <NewBalanceButton />
+        <NewTransactionButton />
       </ButtonGroup>
       <Text>
         Current User: {user ? user.email : 'no one logged in currently'}
       </Text>
-      <Flex direction="row">
-        <SingleDatepicker
-          name="start date picker"
-          date={startDate}
-          onDateChange={handlePickDate(true)}
-        />
-        <SingleDatepicker
-          name="end date picker"
-          date={endDate}
-          onDateChange={handlePickDate(false)}
-        />
-      </Flex>
-      <AccountsChart startDate={startDate} endDate={endDate} />
+      <Box
+        width={{
+          sm: '30em',
+          md: '48em',
+          lg: '62em',
+          xl: '80em',
+          '2xl': '96em',
+        }}
+      >
+        <Flex direction="row" justifyContent="space-evenly">
+          <SingleDatepicker
+            name="start date picker"
+            date={startDate}
+            onDateChange={handlePickDate(true)}
+          />
+          <SingleDatepicker
+            name="end date picker"
+            date={endDate}
+            onDateChange={handlePickDate(false)}
+          />
+        </Flex>
+        <AccountsChart startDate={startDate} endDate={endDate} />
+      </Box>
     </>
   )
 }
