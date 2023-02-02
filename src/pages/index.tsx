@@ -7,6 +7,7 @@ import {
   Text,
   Flex,
   Box,
+  FormLabel,
 } from '@chakra-ui/react'
 import { SingleDatepicker } from 'chakra-dayzed-datepicker'
 import { useState } from 'react'
@@ -18,26 +19,16 @@ import {
   NewAccountButton,
 } from '../components'
 import { putDatesInOrder } from '../helpers'
-import { useAuth } from '../hooks'
+import { useAppState, useAuth } from '../hooks'
 
 export default function Home() {
   const { user, signOut } = useAuth()
-  const [startDate, setStartDate] = useState(new Date())
-  const [endDate, setEndDate] = useState(new Date())
   const { toggleColorMode } = useColorMode()
-
-  const handlePickDate = (isStartDate: boolean) => (newDate: Date) => {
-    const { firstDate, secondDate } = putDatesInOrder(
-      isStartDate ? endDate : startDate,
-      newDate
-    )
-    setStartDate(firstDate)
-    setEndDate(secondDate)
-  }
+  const { startDate, endDate, changeDate } = useAppState()
 
   return (
-    <>
-      <Heading>Welcome to my finance app</Heading>
+    <Flex alignItems="center" direction="column">
+      <Heading>Finance Planning</Heading>
       <ButtonGroup>
         <Button onClick={toggleColorMode}>Switch presentation mode</Button>
         <Button as={Link} href="/login">
@@ -60,20 +51,28 @@ export default function Home() {
           '2xl': '96em',
         }}
       >
-        <Flex direction="row" justifyContent="space-evenly">
-          <SingleDatepicker
-            name="start date picker"
-            date={startDate}
-            onDateChange={handlePickDate(true)}
-          />
-          <SingleDatepicker
-            name="end date picker"
-            date={endDate}
-            onDateChange={handlePickDate(false)}
-          />
+        <Flex direction="row" justifyContent="space-evenly" maxWidth="50%">
+          <Flex direction="column" width="100%" mr={2}>
+            <FormLabel>Start Date</FormLabel>
+            <SingleDatepicker
+              name="start date picker"
+              date={startDate}
+              maxDate={endDate}
+              onDateChange={changeDate(true)}
+            />
+          </Flex>
+          <Flex direction="column" width="100%">
+            <FormLabel>End Date</FormLabel>
+            <SingleDatepicker
+              minDate={startDate}
+              name="end date picker"
+              date={endDate}
+              onDateChange={changeDate(false)}
+            />
+          </Flex>
         </Flex>
-        <AccountsChart startDate={startDate} endDate={endDate} />
+        <AccountsChart />
       </Box>
-    </>
+    </Flex>
   )
 }
