@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 import { useAuth } from '../hooks'
 
 const Login = () => {
-  const { login, user } = useAuth()
+  const { login } = useAuth()
   const formBackground = useColorModeValue('gray.100', 'gray.700')
   const toast = useToast()
   const router = useRouter()
@@ -24,10 +24,6 @@ const Login = () => {
     password: '',
   })
   const { email, password } = formData
-
-  if (user) {
-    router.push('/')
-  }
 
   const validate = () => !!email && !!password
 
