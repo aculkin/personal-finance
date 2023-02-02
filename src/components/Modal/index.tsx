@@ -14,12 +14,16 @@ const Modal = ({
   title,
   isOpen,
   handleClose,
+  handleSubmit = () => null,
   children,
+  isLoading = false,
 }: {
   title: string
   isOpen: boolean
   handleClose: () => void
+  handleSubmit?: () => void
   children: ReactNode
+  isLoading?: boolean
 }) => {
   return (
     <SystemModal isOpen={isOpen} onClose={handleClose}>
@@ -29,10 +33,17 @@ const Modal = ({
         <ModalCloseButton />
         <ModalBody>{children}</ModalBody>
         <ModalFooter>
-          <Button variant="ghost" mr={3} onClick={handleClose}>
+          <Button
+            isLoading={isLoading}
+            variant="ghost"
+            mr={3}
+            onClick={handleClose}
+          >
             Cancel
           </Button>
-          <Button colorScheme="blue">Save</Button>
+          <Button colorScheme="blue" onClick={handleSubmit}>
+            Save
+          </Button>
         </ModalFooter>
       </ModalContent>
     </SystemModal>

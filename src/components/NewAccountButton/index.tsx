@@ -3,9 +3,37 @@ import { Button } from '@chakra-ui/react'
 
 import { Modal } from '..'
 import { AccountForm } from '../forms'
+import { useAppState } from '../../hooks'
+
+const defaultAccountData = {
+  name: '',
+  asset: true,
+  liquid: true,
+}
 
 const NewAccountButton = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [accountData, setAccountData] = useState(defaultAccountData)
+  const { addAccount } = useAppState()
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target
+
+    setAccountData({
+      ...accountData,
+      [name]: name === 'name' ? value : !accountData[name],
+    })
+  }
+
+  const handleSubmit = async () => {
+    setIsLoading(true)
+    await addAccount(accountData)
+    setIsLoading(false)
+    setAccountData(defaultAccountData)
+    setIsOpen(false)
+  }
+
+  const { name, liquid, asset } = accountData
   return (
     <>
       <Button onClick={() => setIsOpen(true)}>New Account</Button>
@@ -13,8 +41,15 @@ const NewAccountButton = () => {
         title="New Account"
         isOpen={isOpen}
         handleClose={() => setIsOpen(false)}
+        handleSubmit={handleSubmit}
+        isLoading={isLoading}
       >
-        <AccountForm />
+        <AccountForm
+          handleChange={handleChange}
+          name={name}
+          asset={asset}
+          liquid={liquid}
+        />
       </Modal>
     </>
   )

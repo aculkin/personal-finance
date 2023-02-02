@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import {
   FormControl,
   Select,
@@ -18,6 +19,7 @@ interface TransactionForm {
   fromAccountId?: number
   toAccountId?: number
   startDate?: Date
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const TransactionForm = ({
@@ -30,13 +32,14 @@ const TransactionForm = ({
   fromAccountId,
   toAccountId,
   startDate = new Date(),
+  handleChange,
 }: TransactionForm) => {
   return (
     <FormControl alignItems="center">
       <FormLabel mb="0">Transaction Name:</FormLabel>
-      <Input value={name} />
+      <Input value={name} onChange={handleChange} name="name" />
       <FormLabel mb="0">Frequency</FormLabel>
-      <Select>
+      <Select value={frequency}>
         <option value="daily">Daily</option>
         <option value="weekly">Weekly</option>
         <option value="biWeekly">Bi-Weekly</option>
@@ -47,28 +50,53 @@ const TransactionForm = ({
       </Select>
       <FormLabel mb="0">Interest Rate:</FormLabel>
       <NumberInput>
-        <NumberInputField value={interestRate} />
+        <NumberInputField
+          value={interestRate}
+          onChange={handleChange}
+          name="interestRate"
+        />
       </NumberInput>
       <FormLabel mb="0">Amount:</FormLabel>
       <NumberInput>
-        <NumberInputField value={amount} />
+        <NumberInputField
+          value={amount}
+          onChange={handleChange}
+          name="amount"
+        />
       </NumberInput>
       <FormLabel mb="0">Payoff the account:</FormLabel>
-      <Switch checked={payoffToAccount} />
+      <Switch checked={payoffToAccount} name="payoffToAccount" />
       <FormLabel mb="0">Priority:</FormLabel>
       <NumberInput>
-        <NumberInputField value={priority} />
+        <NumberInputField
+          value={priority}
+          onChange={handleChange}
+          name="priority"
+        />
       </NumberInput>
       <FormLabel mb="0">"From" Account Id</FormLabel>
       <NumberInput>
-        <NumberInputField value={fromAccountId} />
+        <NumberInputField
+          value={fromAccountId}
+          onChange={handleChange}
+          name="fromAccountId"
+        />
       </NumberInput>
       <FormLabel mb="0">"To" Account Id</FormLabel>
       <NumberInput>
-        <NumberInputField value={toAccountId} />
+        <NumberInputField
+          value={toAccountId}
+          onChange={handleChange}
+          name="toAccountId"
+        />
       </NumberInput>
       <FormLabel mb="0">Start Date:</FormLabel>
-      <Input type="date" />
+      <Input
+        type="date"
+        value={startDate ? format(startDate, 'yyyy-MM-dd') : null}
+        onChange={handleChange}
+        name="startDate"
+      />
     </FormControl>
   )
 }
