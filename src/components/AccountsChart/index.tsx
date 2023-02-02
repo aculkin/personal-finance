@@ -8,33 +8,11 @@ import {
   Td,
   TableContainer,
 } from '@chakra-ui/react'
-import { format, eachDayOfInterval } from 'date-fns'
-import { generateAccountBalances } from '../../helpers'
+import { format } from 'date-fns'
 import { useAppState } from '../../hooks'
 
-const AccountsChart = ({
-  startDate,
-  endDate,
-}: {
-  startDate: Date
-  endDate: Date
-}) => {
-  const { accounts, balances, transactions } = useAppState()
-  const [dateArray, setDateArray] = useState([])
-  const [accountArrays, setAccountArrays] = useState({})
-
-  useEffect(() => {
-    const newDateArray = eachDayOfInterval({ start: startDate, end: endDate })
-    setDateArray(newDateArray)
-    const result = generateAccountBalances({
-      dates: newDateArray,
-      accounts,
-      balances,
-      transactions,
-    })
-    setAccountArrays(result)
-    console.log('result', result)
-  }, [startDate, endDate])
+const AccountsChart = () => {
+  const { accounts, accountBalances } = useAppState()
 
   return (
     <TableContainer>
@@ -42,18 +20,24 @@ const AccountsChart = ({
         <Thead>
           <Tr>
             <Th>Date</Th>
-            {accounts.map(({ name }) => (
-              <Th key={name}>{name}</Th>
+            {accounts.map(({ name, id }) => (
+              <Th key={name}>
+                {name} (id: {id})
+              </Th>
             ))}
           </Tr>
         </Thead>
         <Tbody>
-          {dateArray.map((date, dateIndex) => (
-            <Tr>
+          {accountBalances.map(({ date, balances }, dateIndex) => (
+            <Tr key={dateIndex}>
               <Td>{format(date, 'PP')}</Td>
-              {accounts.map((account) => {
-                const value = accountArrays[account.id][dateIndex]
-                return <Td alignItems="right">${value || 0}.00</Td>
+              {balances.map((balance, index) => {
+                // const value = accountArrays[account.id][dateIndex]
+                return (
+                  <Td alignItems="right" key={index}>
+                    ${balance || 0}.00
+                  </Td>
+                )
               })}
             </Tr>
           ))}
