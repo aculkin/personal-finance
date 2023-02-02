@@ -7,7 +7,7 @@ import { useAppState } from '../../hooks'
 
 const defaultTransactionData = {
   name: '',
-  frequency: null,
+  frequency: '',
   interestRate: null,
   amount: null,
   payoffToAccount: false,
@@ -48,12 +48,12 @@ const NewTransactionButton = () => {
     await addTransaction({
       name,
       frequency,
-      interest_rate: interestRate,
-      amount,
+      interest_rate: parseFloat(interestRate),
+      amount: parseFloat(amount),
       payoff_to_account: payoffToAccount,
       priority,
-      from_account: fromAccountId,
-      to_account: toAccountId,
+      from_account: parseInt(fromAccountId),
+      to_account: parseInt(toAccountId),
       start_date: startDate.toString(),
     })
     setTransactionData(defaultTransactionData)
