@@ -102,7 +102,6 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
       amount,
       account_id,
     } as Balance)
-    console.log(newBalance)
     // add balance to database
     setBalances([...balances, newBalance])
   }
@@ -158,10 +157,6 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
       transactions,
     })
     setAccountBalances(result)
-    console.log('daily balance array', result)
-    console.log('accounts', accounts)
-    console.log('balances', balances)
-    console.log('transactions', transactions)
   }, [startDate, endDate, balances, accounts, transactions])
 
   return (
