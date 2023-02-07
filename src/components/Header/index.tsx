@@ -6,11 +6,29 @@ import {
   useColorMode,
   ButtonGroup,
 } from '@chakra-ui/react'
+import { useState } from 'react'
+import { useRouter } from 'next/router'
+
 import { useAuth } from '../../hooks'
 
 const Header = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
   const { user, signOut } = useAuth()
   const { toggleColorMode } = useColorMode()
+
+  const handleSignout = async () => {
+    setIsLoading(true)
+    try {
+      await signOut()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+      router.push('/login')
+    }
+  }
+
   return (
     <Flex width="100%" height="100%" flexDirection="row" alignItems="center">
       <Text flexWrap="nowrap">
@@ -24,7 +42,9 @@ const Header = () => {
         justifyContent="flex-end"
       >
         {user ? (
-          <Button onClick={signOut}>Log Out</Button>
+          <Button isLoading={isLoading} onClick={handleSignout}>
+            Log Out
+          </Button>
         ) : (
           <Button as={Link} href="/login">
             Log In!
