@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
   Table,
   Thead,
@@ -7,8 +7,11 @@ import {
   Th,
   Td,
   TableContainer,
+  Text,
 } from '@chakra-ui/react'
 import { format } from 'date-fns'
+
+import { currencyFormatter } from '../../helpers/currencyFormatter'
 import { useAppState } from '../../hooks'
 
 const AccountsChart = () => {
@@ -16,12 +19,12 @@ const AccountsChart = () => {
 
   return (
     <TableContainer>
-      <Table variant="simple" size="sm">
+      <Table size="sm">
         <Thead>
           <Tr>
             <Th>Date</Th>
             {accounts.map(({ name, id }) => (
-              <Th key={name}>
+              <Th key={name} justifyContent="center">
                 {name} (id: {id})
               </Th>
             ))}
@@ -32,10 +35,9 @@ const AccountsChart = () => {
             <Tr key={dateIndex}>
               <Td>{format(date, 'PP')}</Td>
               {balances.map((balance, index) => {
-                // const value = accountArrays[account.id][dateIndex]
                 return (
-                  <Td alignItems="right" key={index}>
-                    ${balance || 0}.00
+                  <Td alignItems="right" key={index} isNumeric>
+                    {currencyFormatter(balance || 0)}
                   </Td>
                 )
               })}
