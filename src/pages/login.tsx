@@ -11,10 +11,13 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
+import Database from '../../types'
 
 import { useAuth } from '../hooks'
 
 const Login = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
   const formBackground = useColorModeValue('gray.100', 'gray.700')
   const toast = useToast()
@@ -33,11 +36,14 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (validate()) {
+      setIsLoading(true)
       try {
         await login(formData)
         router.push('/')
       } catch (error) {
         console.error(error)
+      } finally {
+        setIsLoading(false)
       }
     } else {
       toast({
@@ -72,7 +78,13 @@ const Login = () => {
             value={password}
             onChange={handleChange}
           />
-          <Button type="submit" colorScheme="teal" onClick={handleLogin} mb={3}>
+          <Button
+            isLoading={isLoading}
+            type="submit"
+            colorScheme="teal"
+            onClick={handleLogin}
+            mb={3}
+          >
             Log In
           </Button>
         </FormControl>
@@ -83,6 +95,29 @@ const Login = () => {
       </Flex>
     </Flex>
   )
+}
+
+export const getServerSideProps = async (ctx) => {
+  const supabaseServerClient = createServerSupabaseClient<Database>(ctx)
+  const {
+    data: { session },
+  } = await supabaseServerClient.auth.getSession()
+
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+      props: {
+        initialSession: session,
+        user: session.user,
+      },
+    }
+  }
+  return {
+    props: {},
+  }
 }
 
 export default Login
