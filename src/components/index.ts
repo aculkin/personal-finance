@@ -1,5 +1,8 @@
 export { AccountsChart } from './AccountsChart'
 export { Modal } from './Modal'
 export { NewAccountButton } from './NewAccountButton'
+export { NewAccountModal } from './NewAccountModal'
 export { NewBalanceButton } from './NewBalanceButton'
+export { NewBalanceModal } from './NewBalanceModal'
 export { NewTransactionButton } from './NewTransactionButton'
+export { NewTransactionModal } from './NewTransactionModal'
