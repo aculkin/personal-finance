@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react'
-import { useToast } from '@chakra-ui/react'
-
-import { supabase } from '../../lib/initSupabase'
-
+import {
+  useUser,
+  useSupabaseClient,
+  useSession,
+} from '@supabase/auth-helpers-react'
 const useAuth = () => {
-  const [user, setUser] = useState(null)
+  const user = useUser()
+  const session = useSession()
+  const supabase = useSupabaseClient()
 
   const login = async ({
     email,
@@ -33,26 +35,14 @@ const useAuth = () => {
     })
   }
 
-  const getUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    setUser(user)
-  }
-
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
-      setUser(null)
       console.log(error)
     } catch (error) {
       console.error(error)
     }
   }
-
-  useEffect(() => {
-    getUser()
-  }, [])
 
   return { user, signOut, login, signup }
 }
