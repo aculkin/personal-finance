@@ -30,7 +30,6 @@ const NewBalanceModal = ({
       ...balanceData,
       [name]: name == 'date' ? new Date(value) : parseInt(value),
     })
-    console.log('balanceData', balanceData)
   }
 
   const handleSubmit = async () => {
