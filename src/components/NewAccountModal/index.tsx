@@ -11,8 +11,13 @@ const defaultAccountData = {
   liquid: true,
 }
 
-const NewAccountButton = (props: ButtonProps) => {
-  const [isOpen, setIsOpen] = useState(false)
+const NewAccountModal = ({
+  isOpen = false,
+  setIsOpen,
+}: {
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+}) => {
   const [isLoading, setIsLoading] = useState(false)
   const [accountData, setAccountData] = useState(defaultAccountData)
   const { addAccount } = useAppState()
@@ -35,26 +40,21 @@ const NewAccountButton = (props: ButtonProps) => {
 
   const { name, liquid, asset } = accountData
   return (
-    <>
-      <Button onClick={() => setIsOpen(true)} {...props}>
-        New Account
-      </Button>
-      <Modal
-        title="New Account"
-        isOpen={isOpen}
-        handleClose={() => setIsOpen(false)}
-        handleSubmit={handleSubmit}
-        isLoading={isLoading}
-      >
-        <AccountForm
-          handleChange={handleChange}
-          name={name}
-          asset={asset}
-          liquid={liquid}
-        />
-      </Modal>
-    </>
+    <Modal
+      title="New Account"
+      isOpen={isOpen}
+      handleClose={() => setIsOpen(false)}
+      handleSubmit={handleSubmit}
+      isLoading={isLoading}
+    >
+      <AccountForm
+        handleChange={handleChange}
+        name={name}
+        asset={asset}
+        liquid={liquid}
+      />
+    </Modal>
   )
 }
 
-export { NewAccountButton }
+export { NewAccountModal }

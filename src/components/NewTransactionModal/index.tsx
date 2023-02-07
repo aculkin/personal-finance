@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Button, ButtonProps } from '@chakra-ui/react'
 
 import { Modal } from '..'
 import { TransactionForm } from '../forms'
@@ -17,8 +16,13 @@ const defaultTransactionData = {
   startDate: new Date(),
 }
 
-const NewTransactionButton = (props: ButtonProps) => {
-  const [isOpen, setIsOpen] = useState(false)
+const NewTransactionModal = ({
+  isOpen = false,
+  setIsOpen,
+}: {
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+}) => {
   const [isLoading, setIsLoading] = useState(false)
   const [transactionData, setTransactionData] = useState(defaultTransactionData)
   const { addTransaction } = useAppState()
@@ -62,31 +66,26 @@ const NewTransactionButton = (props: ButtonProps) => {
   }
 
   return (
-    <>
-      <Button onClick={() => setIsOpen(true)} {...props}>
-        New Transaction
-      </Button>
-      <Modal
-        title="New Transaction"
-        isOpen={isOpen}
-        handleClose={() => setIsOpen(false)}
-        handleSubmit={handleSubmit}
-      >
-        <TransactionForm
-          name={name}
-          frequency={frequency}
-          interestRate={interestRate}
-          amount={amount}
-          payoffToAccount={payoffToAccount}
-          priority={priority}
-          fromAccountId={fromAccountId}
-          toAccountId={toAccountId}
-          startDate={startDate}
-          handleChange={handleChange}
-        />
-      </Modal>
-    </>
+    <Modal
+      title="New Transaction"
+      isOpen={isOpen}
+      handleClose={() => setIsOpen(false)}
+      handleSubmit={handleSubmit}
+    >
+      <TransactionForm
+        name={name}
+        frequency={frequency}
+        interestRate={interestRate}
+        amount={amount}
+        payoffToAccount={payoffToAccount}
+        priority={priority}
+        fromAccountId={fromAccountId}
+        toAccountId={toAccountId}
+        startDate={startDate}
+        handleChange={handleChange}
+      />
+    </Modal>
   )
 }
 
-export { NewTransactionButton }
+export { NewTransactionModal }

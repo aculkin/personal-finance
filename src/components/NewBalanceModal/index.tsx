@@ -11,8 +11,13 @@ const defaultBalanceData = {
   accountId: null,
 }
 
-const NewBalanceButton = (props: ButtonProps) => {
-  const [isOpen, setIsOpen] = useState(false)
+const NewBalanceModal = ({
+  isOpen = false,
+  setIsOpen,
+}: {
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+}) => {
   const [isLoading, setIsLoading] = useState(false)
   const [balanceData, setBalanceData] = useState(defaultBalanceData)
   const { addBalance } = useAppState()
@@ -41,26 +46,21 @@ const NewBalanceButton = (props: ButtonProps) => {
   }
 
   return (
-    <>
-      <Button onClick={() => setIsOpen(true)} {...props}>
-        New Balance
-      </Button>
-      <Modal
-        title="New Balance"
-        isOpen={isOpen}
-        handleClose={() => setIsOpen(false)}
-        handleSubmit={handleSubmit}
-        isLoading={isLoading}
-      >
-        <BalanceForm
-          date={date}
-          amount={amount}
-          accountId={accountId}
-          handleChange={handleChange}
-        />
-      </Modal>
-    </>
+    <Modal
+      title="New Balance"
+      isOpen={isOpen}
+      handleClose={() => setIsOpen(false)}
+      handleSubmit={handleSubmit}
+      isLoading={isLoading}
+    >
+      <BalanceForm
+        date={date}
+        amount={amount}
+        accountId={accountId}
+        handleChange={handleChange}
+      />
+    </Modal>
   )
 }
 
-export { NewBalanceButton }
+export { NewBalanceModal }
