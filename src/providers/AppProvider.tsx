@@ -57,7 +57,7 @@ const getNextId = (objects: Accounts | Balances | Transactions) =>
     .pop() + 1
 
 const AppContextProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth()
+  // const { user } = useAuth()
   const [accounts, setAccounts] = useState(generateAccounts() as Accounts)
   const [balances, setBalances] = useState(generateBalances() as Balances)
   const [transactions, setTransactions] = useState(
@@ -76,7 +76,7 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
       id: getNextId(accounts),
       target_value: 100,
       created_at: new Date().toString(),
-      user_id: user.id,
+      user_id: 1,
       ...accountInfo,
     } as Account)
     // add account to database
