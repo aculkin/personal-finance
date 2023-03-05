@@ -1,60 +1,18 @@
-import { useState } from 'react'
-import { Button, ButtonProps } from '@chakra-ui/react'
+import { useState } from "react";
+import { Button, ButtonProps } from "@chakra-ui/react";
 
-import { Modal } from '..'
-import { AccountForm } from '../forms'
-import { useAppState } from '../../hooks'
-
-const defaultAccountData = {
-  name: '',
-  asset: true,
-  liquid: true,
-}
+import { NewAccountModal } from "../NewAccountModal";
 
 const NewAccountButton = (props: ButtonProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [accountData, setAccountData] = useState(defaultAccountData)
-  const { addAccount } = useAppState()
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
+	const [isOpen, setIsOpen] = useState(false);
+	return (
+		<>
+			<Button onClick={() => setIsOpen(true)} {...props}>
+				New Account
+			</Button>
+			<NewAccountModal isOpen={isOpen} setIsOpen={setIsOpen} />
+		</>
+	);
+};
 
-    setAccountData({
-      ...accountData,
-      [name]: name === 'name' ? value : !accountData[name],
-    })
-  }
-
-  const handleSubmit = async () => {
-    setIsLoading(true)
-    await addAccount(accountData)
-    setIsLoading(false)
-    setAccountData(defaultAccountData)
-    setIsOpen(false)
-  }
-
-  const { name, liquid, asset } = accountData
-  return (
-    <>
-      <Button onClick={() => setIsOpen(true)} {...props}>
-        New Account
-      </Button>
-      <Modal
-        title="New Account"
-        isOpen={isOpen}
-        handleClose={() => setIsOpen(false)}
-        handleSubmit={handleSubmit}
-        isLoading={isLoading}
-      >
-        <AccountForm
-          handleChange={handleChange}
-          name={name}
-          asset={asset}
-          liquid={liquid}
-        />
-      </Modal>
-    </>
-  )
-}
-
-export { NewAccountButton }
+export { NewAccountButton };
