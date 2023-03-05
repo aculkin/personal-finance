@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { createContext, useState } from "react";
-import { eachDayOfInterval, addDays } from "date-fns";
-import { createClient } from "@supabase/supabase-js";
+import { eachDayOfInterval, addDays, format } from "date-fns";
+import { useToast } from "@chakra-ui/react";
 import type { Session } from "@supabase/auth-helpers-nextjs";
 import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
 
@@ -17,7 +17,9 @@ import type {
 	EditTransaction,
 } from "../../types";
 import Database from "../../types";
-import { putDatesInOrder, generateDateBalanceArray } from "../helpers";
+import { generateDateBalanceArray } from "../helpers";
+
+const SUPABASE_DATE_FORMAT = "yyyy-MM-dd";
 
 export interface AccountBalance {
 	date: Date;
@@ -40,7 +42,7 @@ interface Context {
 	session?: Session;
 	startDate: Date;
 	endDate: Date;
-	changeDate?: (isStartDate: boolean) => (date: Date) => void;
+	changeDateRange?: ([startDate, endDate]: [Date, Date]) => void;
 	accountBalances: AccountBalance[];
 }
 
@@ -77,26 +79,36 @@ const AppContextProvider = ({
 	const [transactions, setTransactions] = useState(
 		initialTransactions as Transactions
 	);
-	const [session, setSession] = useState(initialSession);
-	const [dateRange, setDateRange] = useState({
-		startDate: new Date(),
-		endDate: new Date(),
-	});
-	const { startDate, endDate } = dateRange;
+	const [session] = useState(initialSession);
+	const [selectedDates, setSelectedDates] = useState<Date[]>([
+		new Date(),
+		addDays(new Date(), 7),
+	]);
 	const [accountBalances, setAccountBalances] = useState([]);
+	const errorToast = useToast({
+		title: "Error:",
+		status: "error",
+		duration: 4000,
+		isClosable: true,
+		position: "top",
+	});
 
 	const addAccount = async (accountInfo: AddAccount) => {
 		try {
-			const { data } = await supabaseClient
+			const { data, error } = await supabaseClient
 				.from("accounts")
 				.insert({ ...accountInfo, user_id: user.id })
 				.select();
+			if (error) {
+				throw error;
+			}
 			const newAccount = data[0];
 			if (newAccount) {
 				setAccounts([...accounts, newAccount]);
 			}
 		} catch (error) {
 			console.error(error);
+			errorToast({ description: error.message });
 		}
 	};
 	const removeAccount = async (id: number) => {
@@ -109,6 +121,7 @@ const AppContextProvider = ({
 			]);
 		} catch (error) {
 			console.error(error);
+			errorToast({ description: error.message });
 		}
 	};
 	const editAccount = async (accountInfo: EditAccount) => {
@@ -130,21 +143,30 @@ const AppContextProvider = ({
 			]);
 		} catch (error) {
 			console.error(error);
+			errorToast({ description: error.message });
 		}
 	};
 
 	const addBalance = async (balanceInfo: AddBalance) => {
 		try {
-			const { data } = await supabaseClient
+			const { data, error } = await supabaseClient
 				.from("balances")
-				.insert({ ...balanceInfo, user_id: user.id })
+				.insert({
+					...balanceInfo,
+					user_id: user.id,
+					date: format(new Date(balanceInfo.date), SUPABASE_DATE_FORMAT),
+				})
 				.select();
+			if (error) {
+				throw error;
+			}
 			const newBalance = data[0];
 			if (newBalance) {
 				setBalances([...balances, newBalance]);
 			}
 		} catch (error) {
 			console.error(error);
+			errorToast({ description: error.message });
 		}
 	};
 	const removeBalance = async (id: number) => {
@@ -157,6 +179,7 @@ const AppContextProvider = ({
 			]);
 		} catch (error) {
 			console.error(error);
+			errorToast({ description: error.message });
 		}
 	};
 	const editBalance = async (balanceInfo: EditBalance) => {
@@ -178,21 +201,33 @@ const AppContextProvider = ({
 			]);
 		} catch (error) {
 			console.error(error);
+			errorToast({ description: error.message });
 		}
 	};
 
 	const addTransaction = async (transactionInfo: AddTransaction) => {
 		try {
-			const { data } = await supabaseClient
+			const { data, error } = await supabaseClient
 				.from("transactions")
-				.insert({ ...transactionInfo, user_id: user.id })
+				.insert({
+					...transactionInfo,
+					user_id: user.id,
+					start_date: format(
+						new Date(transactionInfo.start_date),
+						SUPABASE_DATE_FORMAT
+					),
+				})
 				.select();
+			if (error) {
+				throw error;
+			}
 			const newTransaction = data[0];
 			if (newTransaction) {
 				setTransactions([...transactions, newTransaction]);
 			}
 		} catch (error) {
 			console.error(error);
+			errorToast({ description: error.message });
 		}
 	};
 	const removeTransaction = async (id: number) => {
@@ -205,6 +240,7 @@ const AppContextProvider = ({
 			]);
 		} catch (error) {
 			console.error(error);
+			errorToast({ description: error.message });
 		}
 	};
 	const editTransaction = async (transactionInfo: EditTransaction) => {
@@ -227,30 +263,31 @@ const AppContextProvider = ({
 			]);
 		} catch (error) {
 			console.error(error);
+			errorToast({ description: error.message });
 		}
 	};
 
-	const changeDate = (isStartDate: boolean) => (date: Date) => {
-		const { firstDate, secondDate } = putDatesInOrder(
-			date,
-			isStartDate ? endDate : startDate
-		);
-		setDateRange({
-			startDate: firstDate,
-			endDate: secondDate,
-		});
+	const changeDateRange = (dates: Date[]) => {
+		setSelectedDates(dates);
 	};
 
 	useEffect(() => {
-		const newDateArray = eachDayOfInterval({ start: startDate, end: endDate });
-		const result = generateDateBalanceArray({
-			dates: newDateArray,
-			accounts,
-			balances,
-			transactions,
-		});
-		setAccountBalances(result);
-	}, [startDate, endDate, balances, accounts, transactions]);
+		const startDate = selectedDates[0];
+		const endDate = selectedDates[1];
+		if (startDate && endDate) {
+			const newDateArray = eachDayOfInterval({
+				start: startDate,
+				end: endDate,
+			});
+			const result = generateDateBalanceArray({
+				dates: newDateArray,
+				accounts,
+				balances,
+				transactions,
+			});
+			setAccountBalances(result);
+		}
+	}, [balances, accounts, transactions, selectedDates]);
 
 	return (
 		<appContext.Provider
@@ -268,9 +305,9 @@ const AppContextProvider = ({
 				removeTransaction,
 				editTransaction,
 				session,
-				startDate,
-				endDate,
-				changeDate,
+				startDate: selectedDates[0],
+				endDate: selectedDates[1],
+				changeDateRange,
 				accountBalances,
 			}}
 		>
