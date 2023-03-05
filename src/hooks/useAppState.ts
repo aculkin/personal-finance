@@ -1,9 +1,9 @@
-import { useContext } from 'react'
-import { appContext } from '../providers/AppProvider'
+import { useContext } from "react";
+import { appContext } from "../providers/AppProvider";
 
 const useAppState = () => {
-  const context = useContext(appContext)
-  return context
-}
+	const context = useContext(appContext);
+	return context;
+};
 
-export { useAppState }
+export { useAppState };
