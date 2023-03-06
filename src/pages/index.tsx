@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 
-import { AccountsChart } from "../components";
+import { AccountBalancesChart } from "../components";
 import { AppLayout } from "../layouts";
 import Database from "../../types";
 
@@ -10,7 +10,7 @@ const Home = (props) => {
 	return (
 		<AppContextProvider value={props}>
 			<AppLayout>
-				<AccountsChart />
+				<AccountBalancesChart />
 			</AppLayout>
 		</AppContextProvider>
 	);
