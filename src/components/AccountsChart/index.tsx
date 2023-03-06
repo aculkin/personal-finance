@@ -7,42 +7,73 @@ import {
 	Th,
 	Td,
 	TableContainer,
-	Text,
+	TableCaption,
+	Button,
 } from "@chakra-ui/react";
-import { format } from "date-fns";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 
-import { currencyFormatter } from "../../helpers/currencyFormatter";
+import { currencyFormatter, timeAgo } from "../../helpers";
 import { useAppState } from "../../hooks";
 
+const tableHeaders = {
+	name: "Name",
+	asset: "Asset?",
+	liquid: "Liquid?",
+	target_value: "Target Value",
+	created_at: "Created",
+	edit: "Edit",
+	delete: "Delete",
+};
+
 const AccountsChart = () => {
-	const { accounts, accountBalances, balances, transactions } = useAppState();
+	const { accounts, removeAccount } = useAppState();
+
+	const handleDelete = async (id: number) => {
+		await removeAccount(id);
+	};
 
 	return (
 		<TableContainer>
 			<Table size='sm'>
+				{accounts.length === 0 && (
+					<TableCaption>No accounts to display!</TableCaption>
+				)}
 				<Thead>
 					<Tr>
-						<Th>Date</Th>
-						{accounts.map(({ name, id }) => (
-							<Th key={name} justifyContent='center'>
-								{name} (id: {id})
+						{Object.keys(tableHeaders).map((headerText) => (
+							<Th key={headerText} justifyContent='center'>
+								{tableHeaders[headerText]}
 							</Th>
 						))}
 					</Tr>
 				</Thead>
 				<Tbody>
-					{accountBalances.map(({ date, balances }, dateIndex) => (
-						<Tr key={dateIndex}>
-							<Td>{format(date, "PP")}</Td>
-							{balances.map((balance, index) => {
-								return (
-									<Td alignItems='right' key={index} isNumeric>
-										{currencyFormatter(balance || 0)}
-									</Td>
-								);
-							})}
-						</Tr>
-					))}
+					{accounts.map(
+						({ id, name, created_at, asset, liquid, target_value }) => (
+							<Tr key={id}>
+								<Td>{name}</Td>
+								<Td>{asset ? "Asset" : "Liability"}</Td>
+								<Td>{liquid ? "Liquid" : "Not liquid"}</Td>
+								<Td>{currencyFormatter(target_value)}</Td>
+								<Td>{timeAgo(created_at)}</Td>
+								<Td>
+									<Button leftIcon={<EditIcon />} size='xs' colorScheme='gray'>
+										Edit
+									</Button>
+								</Td>
+								<Td>
+									<Button
+										onClick={() => handleDelete(id)}
+										leftIcon={<DeleteIcon />}
+										size='xs'
+										colorScheme='red'
+									>
+										Delete
+									</Button>
+								</Td>
+							</Tr>
+						)
+					)}
 				</Tbody>
 			</Table>
 		</TableContainer>
